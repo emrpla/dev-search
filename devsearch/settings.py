@@ -12,7 +12,7 @@ SECRET_KEY = 'Secrect Key goes here'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost","127.0.0.1"]
+ALLOWED_HOSTS = ["localhost","127.0.0.1","Your Domain Address.com"]
 
 
 # Application definition
@@ -30,6 +30,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'storages'
+
 ]
 
 REST_FRAMEWORK = {
@@ -83,7 +85,7 @@ MIDDLEWARE = [
     
 ]
 
-ROOT_URLCONF = 'devworld.urls'
+ROOT_URLCONF = 'devsearch.urls'
 
 TEMPLATES = [
     {
@@ -111,11 +113,14 @@ WSGI_APPLICATION = 'devworld.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        "USER":os.environ.get('DB_USER'),
+        "PASSWORD":os.environ.get('DB_PASS'),
+        "HOST":os.environ.get('DB_HOST'),
+        "PORT":"5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -149,12 +154,14 @@ USE_TZ = True
 
 CORS_ALLOW_ALL_ORIGINS =True  # Permissison for the all calls. If you want to allow a spesific domain service Don't do this. Check the Documentation
 
+
+# Gmail configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT ='587'                                       
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "mail address"   
-EMAIL_HOST_PASSWORD = "password"
+EMAIL_HOST_USER = "YOUR mail address"   
+EMAIL_HOST_PASSWORD = "YOUR Password"
 
 
 
@@ -174,3 +181,18 @@ STATIC_ROOT = os.path.join(BASE_DIR,"staticfiles")
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Aws Configuration for Image files
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_FILE_OVERWRITE = False
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+
+if os.getcwd() == '/app': # if we are alive mode turn the debug mode false  
+    DEBUG = False
